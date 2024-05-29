@@ -1,0 +1,19 @@
+.carousel-btn {
+  @apply absolute top-1/2 transform -translate-y-1/2 bg-blue-50 text-black border-none w-12 h-12 rounded-full flex justify-center items-center cursor-pointer shadow-lg z-10;
+}
+
+.carousel-btn.left-0 {
+  @apply left-36; /* Incrementa el margen izquierdo */
+}
+
+.carousel-btn.right-0 {
+  @apply right-36; /* Incrementa el margen derecho */
+}
+
+.carousel-btn:hover {
+  @apply bg-gray-200;
+}
+
+.carousel-btn:focus {
+  @apply outline-none;
+}
