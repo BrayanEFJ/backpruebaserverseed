@@ -1,6 +1,6 @@
 
 export class Asesoria {
-    id?: number;
+    id_asesoria: number;
     nombre_sol: string | null | undefined;
     notas: string | null | undefined;
     isorientador: boolean | null;
@@ -8,5 +8,5 @@ export class Asesoria {
     fecha: Date;
     id_aliado: number;
     doc_emprendedor: number;
-
+    Asesor?: string;
 }
