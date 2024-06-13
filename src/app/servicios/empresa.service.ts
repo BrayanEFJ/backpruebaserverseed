@@ -1,9 +1,10 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
+
 import {Observable} from 'rxjs';
+
 import { environment } from '../../environment/env';
-import { ApoyoEmpresa } from '../Modelos/apoyo-empresa.modelo';
+
 
 @Injectable({
   providedIn: 'root'
@@ -35,11 +36,7 @@ export class EmpresaService {
     return this.http.post(this.url, payload, { headers });
   }
 
-  addApoyoEmpresa(access_token: any, apoyos:ApoyoEmpresa):Observable<any>{
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+ access_token
-    });
-    return this.http.post(this.url, apoyos, { headers });
-  }
+  
+
 }
+

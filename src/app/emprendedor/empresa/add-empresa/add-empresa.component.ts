@@ -1,19 +1,29 @@
 import { Component } from '@angular/core';
-import { faGlobe } from '@fortawesome/free-solid-svg-icons';
-import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
-import { HeaderComponent } from '../../../header/header.component';
-import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder,  Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { DepartamentoService } from '../../../servicios/departamento.service';
-import { MunicipioService } from '../../../servicios/municipio.service';
-import { User } from '../../../Modelos/user.model';
+import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { faIdCard } from '@fortawesome/free-solid-svg-icons';
 import { faMountainCity } from '@fortawesome/free-solid-svg-icons';
 import { faLandmarkFlag } from '@fortawesome/free-solid-svg-icons';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { catchError, of, switchMap, tap } from 'rxjs';
-import { EmpresaService } from '../../../servicios/empresa.service';
+import { HeaderComponent } from '../../../header/header.component';
 import { AlertService } from '../../../servicios/alert.service';
+import { DepartamentoService } from '../../../servicios/departamento.service';
+import { EmpresaService } from '../../../servicios/empresa.service';
+import { MunicipioService } from '../../../servicios/municipio.service';
+import { User } from '../../../Modelos/user.model';
+import { faRankingStar } from '@fortawesome/free-solid-svg-icons';
+import { faTasks } from '@fortawesome/free-solid-svg-icons';
+import { faLightbulb } from '@fortawesome/free-solid-svg-icons';
+import { faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { faAddressCard } from '@fortawesome/free-solid-svg-icons';
+import { faBuilding } from '@fortawesome/free-solid-svg-icons';
+import { faBriefcase } from '@fortawesome/free-solid-svg-icons';
+import { faMobileAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPhone } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-add-empresa',
@@ -37,7 +47,19 @@ export class AddEmpresaComponent {
   faMountainCity = faMountainCity;
   faLandmarkFlag = faLandmarkFlag;
   faLocationDot = faLocationDot;
-  empresaDocumento: string;
+  faEnvelope=faEnvelope;
+  faUser=faUser;
+  faPhone=faPhone;
+  faMobileAlt=faMobileAlt;
+  faBriefcase=faBriefcase;
+  faBuilding=faBuilding;
+  faAddressCard=faAddressCard;
+  faUserTie=faUserTie;
+  faLightbulb=faLightbulb;
+  faTasks=faTasks;
+  faRankingStar=faRankingStar;
+  buttonText: string = 'Guardar Cambios';
+  emprendedorDocumento: string;
 
   constructor(
     private fb: FormBuilder,
@@ -45,14 +67,17 @@ export class AddEmpresaComponent {
     private addEmpresaService: EmpresaService,
     private departamentoService: DepartamentoService,
     private municipioService: MunicipioService,
-    private alertService: AlertService
+    private alertService: AlertService,
+
   ) {
 
   }
 
+ 
   ngOnInit(): void {
     this.validateToken();
     this.cargarDepartamentos();
+    
   }
 
   validateToken(): void {
@@ -66,7 +91,6 @@ export class AddEmpresaComponent {
         this.user = identity;
         this.documento = this.user.emprendedor.documento;
         this.currentRolId = this.user.id_rol?.toString();
-        console.log(this.currentRolId);
       }
     }
   }
@@ -101,17 +125,17 @@ export class AddEmpresaComponent {
 
   addEmpresaForm = this.fb.group({
     nombre: ['', Validators.required],
-    documento: ['', Validators.required],
-    id_tipo_documento: ['', Validators.required],
-    id_municipio: ['', Validators.required],
     correo: ['', [Validators.required, Validators.email]],
-    cargo: ['', Validators.required],
+    id_tipo_documento: ['', Validators.required],
+    documento: ['', Validators.required],
     razonSocial: ['', Validators.required],
-    url_pagina: ['', Validators.required],
+    id_municipio: ['', Validators.required],     
     telefono: [''],
     celular: ['', Validators.required],
+    url_pagina: ['', Validators.required],
     direccion: ['', Validators.required],
     profesion: ['', Validators.required],
+    cargo: ['', Validators.required],
     experiencia: ['', Validators.required],
     funciones: ['', Validators.required],
   });
@@ -127,9 +151,13 @@ export class AddEmpresaComponent {
     id_tipo_documento: ['', Validators.required],
   });
 
-
-
-
+  get f() {
+    return this.addEmpresaForm.controls;
+  }
+  get g() {
+    return this.addApoyoEmpresaForm.controls;
+  }
+ 
 
   crearEmpresa(): void {
     this.submitted = true;
@@ -169,46 +197,31 @@ export class AddEmpresaComponent {
       id_tipo_documento: this.addApoyoEmpresaForm.get('id_tipo_documento')?.value,
       id_empresa: empresa.documento,
     } : null;
-
+    
+    const apoyosList: Array<any>= [];
+    if (apoyos) {
+      apoyosList.push(apoyos);
+    }
     const payload = {
       empresa: empresa,
-      apoyos: apoyos ? [apoyos] : [] // Enviar un array vacío si no hay apoyos
+      apoyos: apoyosList
     };
 
-
-    this.addEmpresaService.addEmpresa(this.token, payload).pipe(
-      tap((response: any) => {
-        console.log('Respuesta de la API (empresa creada):', response);
-        this.alertService.successAlert('Éxito', 'Registro exitoso');
-        this.empresaDocumento = response.documento;
-        this.router.navigate(['list-empresa', this.empresaDocumento]);
-
-        location.reload();
-      }),
-      switchMap((response: any) => {
-        if (!apoyos) { 
-          return of(null);
+   
+      this.addEmpresaService.addEmpresa(this.token, payload).subscribe(
+        data=> {
+          console.log('Respuesta de la API (empresa creada):', data);
+          this.alertService.successAlert('Éxito', 'Registro exitoso');
+          this.emprendedorDocumento = data.empresa.id_emprendedor;
+          //console.log(`------------------------------------------------ ${this.emprendedorDocumento}`);
+          //debugger;
+          this.router.navigate(['list-empresa']);
+        },
+        error=>{
+          this.alertService.errorAlert('Error', error.message);
+          console.log('Respuesta de la API ERRRRORRRRRR')
         }
-        console.log('Datos de apoyoEmpresa con ID de empresa:', apoyos);
-        return this.addEmpresaService.addApoyoEmpresa(this.token, apoyos);
-      }),
-      catchError(error => {
-        console.error('Error al crear la empresa o apoyoEmpresa:', error);
-        this.alertService.successAlert('Éxito', 'Empresa y apoyo creados');
-        this.router.navigate(['list-empresa', this.empresaDocumento]);
-        location.reload();
-        return of(null);
-      })
-    ).subscribe(
-      (apoyoResponse: any) => {
-        if (apoyoResponse) {
-          console.log('Respuesta de la API (apoyoEmpresa creado):', apoyoResponse);
-          this.alertService.successAlert('Éxito', 'Apoyo Empresa creado');
-        }
-        // Navegar a la ruta de la empresa después de que se crea la empresa y el apoyo (si existe)
-        this.router.navigate(['list-empresa', this.empresaDocumento]);
-      }
-    );
+      );
   }
 
   mostrarOcultarContenido() {
@@ -221,6 +234,8 @@ export class AddEmpresaComponent {
     }
   }
 }
+
+
 
 
 

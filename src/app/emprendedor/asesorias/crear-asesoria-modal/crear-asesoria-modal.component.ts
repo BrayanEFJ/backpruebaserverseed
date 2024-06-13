@@ -2,13 +2,16 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { AsesoriaService } from '../../../servicios/asesoria.service';
+
 import { AliadoService } from '../../../servicios/aliado.service';
+import { AsesoriaService } from '../../../servicios/asesoria.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-crear-asesoria-modal',
   templateUrl: './crear-asesoria-modal.component.html',
-  styleUrls: ['./crear-asesoria-modal.component.css']
+  styleUrls: ['./crear-asesoria-modal.component.css'],
+  providers: [AsesoriaService, AliadoService]
 })
 export class CrearAsesoriaModalComponent {
   asesoriaForm: FormGroup;
@@ -17,7 +20,9 @@ export class CrearAsesoriaModalComponent {
   user: any;
   aliados: any[] = []; 
   currentRolId: string | null = null;
-  docEmprendedor: string | null = null; // Variable para almacenar el documento del emprendedor
+  docEmprendedor: string | null = null; 
+  isorientador = new FormControl(false);
+
 
   constructor(
     private fb: FormBuilder,
@@ -64,7 +69,7 @@ export class CrearAsesoriaModalComponent {
   }
 
   loadAliados(): void {
-    this.aliadoService.mostrarAliado().subscribe(
+    this.aliadoService.mostrarAliado(this.token).subscribe(
       (data: any[]) => {
         this.aliados = data;
         console.log(this.aliados);
@@ -115,7 +120,7 @@ export class CrearAsesoriaModalComponent {
         return;
       }
   
-      this.asesoriaService.crearAsesoria(formData).subscribe(
+      this.asesoriaService.crearAsesoria(this.token, formData).subscribe(
         response => {
           console.log('Asesoría creada:', response);
           this.dialogRef.close(formData);

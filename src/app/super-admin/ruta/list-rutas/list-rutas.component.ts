@@ -1,10 +1,12 @@
 // list-rutas.component.ts
 import { Component, OnInit } from '@angular/core';
 import { faEye, faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { RutaService } from '../../../servicios/rutas.service';
 import { Router } from '@angular/router';
-import { User } from '../../../Modelos/user.model';
+
+import { RutaService } from '../../../servicios/rutas.service';
+
 import { Ruta } from '../../../Modelos/ruta.modelo';
+import { User } from '../../../Modelos/user.model';
 
 @Component({
   selector: 'app-list-rutas',
@@ -41,15 +43,15 @@ export class ListRutasComponent implements OnInit {
   validateToken(): void {
     if (!this.token) {
       this.token = localStorage.getItem('token');
-      console.log(this.token);
+      //console.log(this.token);
       let identityJSON = localStorage.getItem('identity');
 
       if (identityJSON) {
         let identity = JSON.parse(identityJSON);
-        console.log(identity);
+        //console.log(identity);
         this.user = identity;
         this.currentRolId = this.user.id_rol?.toString();
-        console.log(this.currentRolId);
+        //console.log(this.currentRolId);
       }
     }
   }
